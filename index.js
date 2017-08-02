@@ -1,36 +1,4 @@
 $(document).ready(function() {
-    MyForm = {
-        formInputs: $('#main-form').find('div input'),
-        validate: function() {
-            return {
-                isValid: false,
-                errorFields: []
-            }
-        },
-        getData: function() {
-            var resObj = {};
-
-            formInputs.each(function(index, input) {
-                var inputName = $(input).prop('name');
-                var inputValue = $(input).prop('value');
-
-                resObj[inputName] = inputValue;
-            });
-
-            return resObj;
-        },
-        setData: function(formData) {
-            this.formInputs.each(function(index, input) {
-                var inputName = $(input).prop('name');
-                var newValue = formData[inputName];
-
-                $(input).prop('value', newValue);
-            });
-        },
-        submit: function() {
-            return undefined
-        }
-    };
     //Mocking Ajax since it doesn't allow requests to file protocol
     function AjaxMock(errorMessage, timeout) {
         this.errorCall = function() {
@@ -69,37 +37,73 @@ $(document).ready(function() {
 
     const ajaxMock = new AjaxMock();
 
-    var submitButton = $('#submit-button');
+    MyForm = {
+        formInputs: $('#main-form').find('div input'),
+        validate: function() {
+            return {
+                isValid: false,
+                errorFields: []
+            }
+        },
+        getData: function() {
+            var resObj = {};
 
+            formInputs.each(function(index, input) {
+                var inputName = $(input).prop('name');
+                var inputValue = $(input).prop('value');
+
+                resObj[inputName] = inputValue;
+            });
+
+            return resObj;
+        },
+        setData: function(formData) {
+            this.formInputs.each(function(index, input) {
+                var inputName = $(input).prop('name');
+                var newValue = formData[inputName];
+
+                $(input).prop('value', newValue);
+            });
+        },
+        submit: function() {
+            if(this.validate()) {
+                var actions = $('#actions').find('div input');
+
+                var selectedAction = actions.filter(function(index, action) {
+                    return $(action).prop('checked');
+                })[0];
+
+                switch($(selectedAction).prop('value')) {
+                    case 'error': 
+                        ajaxMock.errorCall().then(function(res) {
+                            console.log(res);
+                        });
+
+                        break;
+                    case 'success':
+                        ajaxMock.successCall().then(function(res) {
+                            console.log(res);
+                        });
+
+                        break;
+                    case 'progress': 
+                        ajaxMock.progressCall().then(function(res) {
+                            console.log(res);
+                        });
+
+                        break;
+                    default: 
+                        throw Error('No action specified');
+                }
+            } else {
+
+            }
+        }
+    };
+
+    var submitButton = $('#submit-button');
     submitButton.click(function(e) {
         e.preventDefault();
-        var actions = $('#actions').find('div input');
-
-        var selectedAction = actions.filter(function(index, action) {
-            return $(action).prop('checked');
-        })[0];
-
-        switch($(selectedAction).prop('value')) {
-            case 'error': 
-                ajaxMock.errorCall().then(function(res) {
-                    console.log(res);
-                });
-
-                break;
-            case 'success':
-                ajaxMock.successCall().then(function(res) {
-                    console.log(res);
-                });
-
-                break;
-            case 'progress': 
-                ajaxMock.progressCall().then(function(res) {
-                    console.log(res);
-                });
-
-                break;
-            default: 
-                throw Error('No action specified');
-        }
+        MyForm.submit();
     });
 });
