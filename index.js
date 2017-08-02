@@ -40,6 +40,13 @@ $(document).ready(function() {
     MyForm = {
         formInputs: $('#main-form').find('div input'),
         validate: function() {
+            var errorFields = [];
+
+            validateFullName().errors;
+            
+            errorFields.concat();
+
+
             return {
                 isValid: false,
                 errorFields: []
@@ -98,6 +105,28 @@ $(document).ready(function() {
             } else {
 
             }
+        },
+        validateFullName: function() {
+            var fullNameInput = this.formInputs.each(function(index, input) {
+                return $(input).prop('name') === 'fio'
+            });
+
+            fullName = fullNameInput.prop('value');
+            if(fullName.split(' ').length === 3) {
+                return true
+            } else {
+                return false
+            }
+        },
+        validatePhonNumber: function() {
+
+        },
+        validateEmail: function() {
+            var emailInput = this.formInputs.each(function(index, input) {
+                return $(input).prop('name') === 'email'
+            });
+
+
         }
     };
 
