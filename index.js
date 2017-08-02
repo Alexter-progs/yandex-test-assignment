@@ -1,4 +1,19 @@
 $(document).ready(function() {
+    MyForm = {
+        formInputs: $('#main-form').find('div input'),
+        getData: function() {
+            var resObj = {};
+
+            formInputs.each(function(index, input) {
+                var inputName = $(input).prop('name');
+                var inputValue = $(input).prop('value');
+
+                resObj[inputName] = inputValue;
+            });
+
+            return resObj;
+        }
+    };
     //Mocking Ajax since it doesn't allow requests to file protocol
     function AjaxMock(errorMessage, timeout) {
         this.errorCall = function() {
