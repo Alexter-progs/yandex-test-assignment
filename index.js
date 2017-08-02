@@ -1,6 +1,12 @@
 $(document).ready(function() {
     MyForm = {
         formInputs: $('#main-form').find('div input'),
+        validate: function() {
+            return {
+                isValid: false,
+                errorFields: []
+            }
+        },
         getData: function() {
             var resObj = {};
 
@@ -12,6 +18,17 @@ $(document).ready(function() {
             });
 
             return resObj;
+        },
+        setData: function(formData) {
+            this.formInputs.each(function(index, input) {
+                var inputName = $(input).prop('name');
+                var newValue = formData[inputName];
+
+                $(input).prop('value', newValue);
+            });
+        },
+        submit: function() {
+            return undefined
         }
     };
     //Mocking Ajax since it doesn't allow requests to file protocol
