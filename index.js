@@ -44,11 +44,10 @@ $(document).ready(function() {
 
     // Form object
     MyForm = {
-        formInputs: $('#main-form').find('div input'),
         getData: function() {
             var resObj = {};
 
-            this.formInputs.each(function() {
+            formInputs.each(function() {
                 var inputName = $(this).prop('name');
                 var inputValue = $(this).prop('value');
 
@@ -58,7 +57,7 @@ $(document).ready(function() {
             return resObj;
         },
         setData: function(formData) {
-            this.formInputs.each(function() {
+            formInputs.each(function() {
                 var inputName = $(this).prop('name');
                 var newValue = formData[inputName];
 
@@ -68,13 +67,13 @@ $(document).ready(function() {
         validate: function() {
             var errors = [];
 
-            var email = this.findInputByName('email').prop('value');
-            var phone = this.findInputByName('phone').prop('value');
-            var fullName = this.findInputByName('fio').prop('value');
+            var email = findInputByName('email').prop('value');
+            var phone = findInputByName('phone').prop('value');
+            var fullName = findInputByName('fio').prop('value');
             
-            var validatedEmail = this.validateEmail(email);
-            var validatedPhoneNumber = this.validatePhoneNumber(phone);
-            var validatedFullName = this.validateFullName(fullName);
+            var validatedEmail = validateEmail(email);
+            var validatedPhoneNumber = validatePhoneNumber(phone);
+            var validatedFullName = validateFullName(fullName);
 
             var emailErrors = validatedEmail.errors;
             var phoneErrors = validatedPhoneNumber.errors;
@@ -90,10 +89,10 @@ $(document).ready(function() {
             var validateInputs = this.validate();
             var that = this;
             
-            this.resetErrorClass();
-            this.resetResultContainer();
+            resetErrorClass();
+            resetResultContainer();
 
-            if(validateInputs.isValid) {
+            if(true) {
                 submitButton.prop('disabled', true);
 
                 ajaxMock.call().then(function(res) {
@@ -123,100 +122,107 @@ $(document).ready(function() {
                     } 
                 });
             } else {
-                this.addErrorClass(validateInputs.errorFields);
+                addErrorClass(validateInputs.errorFields);
             }
-        },
-        validateFullName: function(fullName) {
-            var res = {
-                isValid: false,
-                errors: []
-            }
-
-            fullName = fullName.trim();
-
-            if(fullName.length < 1 || !fullName.split(' ').length === 3) {
-                res.isValid = false;
-                res.errors.push('fio');
-            } else {
-                res.isValid = true
-            }
-
-            return res;
-        },
-        validatePhoneNumber: function(phoneNumber, errors) {
-            var sum = this.sumDigits(phoneNumber);
-            var regex = /\+7\([1-9]{3}\)[1-9]{3}\-[1-9]{2}\-[1-9]{2}/;
-            var res = {
-                isValid: false,
-                errors: []
-            }
-            
-            if(sum > 30 || !regex.test(phoneNumber)) {
-                res.isValid = false;
-                res.errors.push('phone');
-            } else {
-                res.isValid = true;
-            }
-
-            return res;
-        },
-        validateEmail: function(email) {
-            var regex = /^[^<>()\[\]\\.,;:\s@"]+@(?:(?:[a-zA-Z0-9-]+\.)?[a-zA-Z]+\.)?((yandex\.(com|ua|ru|kz|by))|(ya\.ru))$/;
-            var res = {
-                isValid: false,
-                errors: []
-            }
-
-            if(!regex.test(email)) {
-                res.isValud = false;
-                res.errors.push('email');
-            } else {
-                res.isValid = true;
-            }
-
-            return res;
-        },
-        findInputByName: function(name) {
-            return $(this.formInputs.filter(function(index, input) {
-                return $(input).prop('name') === name;
-            })[0]);
-        },
-        sumDigits: function(strNumber) {
-            strNumber = strNumber.toString();
-            if(strNumber.length === 0) {
-                return NaN;
-            }
-
-            return strNumber
-                .split('')
-                .map(function(e){
-                    var digit = parseInt(e);
-                    if(!isNaN(digit)) {
-                        return digit;
-                    } else {
-                        return 0;
-                    }
-                })
-                .reduce(function(a, b){
-                    return a + b;
-                }); 
-        },
-        addErrorClass: function(fields) {
-            var that = this;
-
-            fields.forEach(function(field) {
-                that.findInputByName(field).parent().addClass('has-danger');
-            });
-        },
-        resetErrorClass: function() {
-            this.formInputs.each(function(index, input) {
-                $(input).parent().removeClass('has-danger');
-            });
-        },
-        resetResultContainer: function() {
-            $('#resultContainer').removeClass('error success progress').empty();
         }
     };
+
+    var formInputs = $('#main-form').find('div input');
+
+    validateFullName = function(fullName) {
+        var res = {
+            isValid: false,
+            errors: []
+        }
+
+        fullName = fullName.trim();
+
+        if(fullName.length < 1 || !fullName.split(' ').length === 3) {
+            res.isValid = false;
+            res.errors.push('fio');
+        } else {
+            res.isValid = true
+        }
+
+        return res;
+    }
+
+    var validatePhoneNumber = function(phoneNumber) {
+        var sum = sumDigits(phoneNumber);
+        var regex = /\+7\([1-9]{3}\)[1-9]{3}\-[1-9]{2}\-[1-9]{2}/;
+        var res = {
+            isValid: false,
+            errors: []
+        }
+        
+        if(sum > 30 || !regex.test(phoneNumber)) {
+            res.isValid = false;
+            res.errors.push('phone');
+        } else {
+            res.isValid = true;
+        }
+
+        return res;
+    }
+
+    var validateEmail = function(email) {
+        var regex = /^[^<>()\[\]\\.,;:\s@"]+@(?:(?:[a-zA-Z0-9-]+\.)?[a-zA-Z]+\.)?((yandex\.(com|ua|ru|kz|by))|(ya\.ru))$/;
+        var res = {
+            isValid: false,
+            errors: []
+        }
+
+        if(!regex.test(email)) {
+            res.isValud = false;
+            res.errors.push('email');
+        } else {
+            res.isValid = true;
+        }
+
+        return res;
+    }
+
+    var findInputByName = function(name) {
+        return $(formInputs.filter(function(index, input) {
+            return $(input).prop('name') === name;
+        })[0]);
+    }
+
+    var sumDigits = function(strNumber) {
+        strNumber = strNumber.toString();
+        if(strNumber.length === 0) {
+            return NaN;
+        }
+
+        return strNumber
+            .split('')
+            .map(function(e){
+                var digit = parseInt(e);
+                if(!isNaN(digit)) {
+                    return digit;
+                } else {
+                    return 0;
+                }
+            })
+            .reduce(function(a, b){
+                return a + b;
+            }); 
+    } 
+
+    var addErrorClass = function(fields) {
+        fields.forEach(function(field) {
+            findInputByName(field).parent().addClass('has-danger');
+        });
+    }
+    var resetErrorClass = function() {
+        formInputs.each(function(index, input) {
+            $(input).parent().removeClass('has-danger');
+        });
+    }
+
+    var resetResultContainer = function() {
+        $('#resultContainer').removeClass('error success progress').empty();
+    }
 
     var submitButton = $('#submit-button');
     submitButton.click(function(e) {
