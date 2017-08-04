@@ -90,6 +90,7 @@ $(document).ready(function() {
             var validateInputs = this.validate();
           
             this.resetErrorClass();
+            this.resetResultContainer();
 
             if(true) {
                 ajaxMock.call().then(function(res) {
@@ -97,13 +98,13 @@ $(document).ready(function() {
                     console.log(res)
                     switch (res.status) {
                         case 'success':
-                            $('#resultContainer').addClass('success')
+                            $('#resultContainer').addClass('success').append('Success');
                             break;
                         case 'error':
-                            $('#resultContainer').addClass('error')
+                            $('#resultContainer').addClass('error').append('Error');
                             break;
                         case 'progress':
-                            $('#resultContainer').addClass('progress')
+                            $('#resultContainer').addClass('progress').append('Progress');
                             break;
                         default: 
                             throw Error('Not supported response status');
@@ -200,6 +201,9 @@ $(document).ready(function() {
                 $(input).parent().removeClass('has-danger');
             });
         },
+        resetResultContainer: function() {
+            $('#resultContainer').removeClass('error success progress').empty();
+        }
     };
 
     var submitButton = $('#submit-button');
