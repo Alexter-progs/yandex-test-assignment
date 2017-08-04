@@ -33,9 +33,14 @@ $(document).ready(function() {
                 resolve(response);
             });
         }
+
+        this.call = function() {
+            var functions = [this.errorCall, this.successCall, this.progressCall];
+            return functions[Math.floor(Math.random() * functions.length)]();
+        }
     }
 
-    const ajaxMock = new AjaxMock();
+    ajaxMock = new AjaxMock();
 
     // Form object
     MyForm = {
@@ -86,11 +91,26 @@ $(document).ready(function() {
           
             this.resetErrorClass();
 
-            if(validateInputs.isValid) {
-                this.sendAjax();
+            if(true) {
+                ajaxMock.call().then(function(res) {
+                    res = JSON.parse(res);
+                    console.log(res)
+                    switch (res.status) {
+                        case 'success':
+                            $('#resultContainer').addClass('success')
+                            break;
+                        case 'error':
+                            $('#resultContainer').addClass('error')
+                            break;
+                        case 'progress':
+                            $('#resultContainer').addClass('progress')
+                            break;
+                        default: 
+                            throw Error('Not supported response status');
+                    } 
+                });
             } else {
                 this.addErrorClass(validateInputs.errorFields);
-                
             }
         },
         validateFullName: function(fullName) {
@@ -167,36 +187,6 @@ $(document).ready(function() {
                 .reduce(function(a, b){
                     return a + b;
                 }); 
-        },
-        sendAjax: function() {
-            var actions = $('#actions').find('div input');
-
-            var selectedAction = actions.filter(function() {
-                return $(this).prop('checked');
-            })[0];
-
-            switch($(selectedAction).prop('value')) {
-                case 'error': 
-                    ajaxMock.errorCall().then(function(res) {
-                        console.log(res);
-                    });
-
-                    break;
-                case 'success':
-                    ajaxMock.successCall().then(function(res) {
-                        console.log(res);
-                    });
-
-                    break;
-                case 'progress': 
-                    ajaxMock.progressCall().then(function(res) {
-                        console.log(res);
-                    });
-
-                    break;
-                default: 
-                    throw Error('No action specified');
-            }
         },
         addErrorClass: function(fields) {
             var that = this;
