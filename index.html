@@ -18,7 +18,6 @@
             margin-top: 20px;
             padding: 10px;
         }
-
         .success {
             border: solid 1px black;
             background: green;
@@ -50,12 +49,15 @@
                 <label for="phone">Phone</label>
                 <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter your phone number">
             </div>
-            <button type="submit" class="btn btn-primary" id="submit-button">Submit</button>
+            <div>
+                <button type="submit" class="btn btn-primary" id="submit-button">Submit</button>
+                <img src="assets/loading.svg" style="display: none" class='loader'/>
+            </div>
         </form>
     </div>
-    <div class="container" id="resultContainer">
-        
+    <div class="container" id="resultContainer">   
     </div>
+
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
     <script src="lib/jquery/jquery-3.1.1.min.js"></script>
     <script src="lib/tether/tether.min.js"></script>

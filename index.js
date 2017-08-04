@@ -92,8 +92,12 @@ $(document).ready(function() {
             resetErrorClass();
             resetResultContainer();
 
-            if(true) {
+
+
+            if(validateInputs.isValid) {
                 submitButton.prop('disabled', true);
+
+                loaderSVG.show();
 
                 ajaxMock.call().then(function(res) {
                     res = JSON.parse(res);
@@ -103,12 +107,14 @@ $(document).ready(function() {
                             setTimeout(function() {
                                 $('#resultContainer').addClass('success').append('Success');
                                 submitButton.prop('disabled', false);
+                                loaderSVG.hide();
                             }, 1000);
                             break;
                         case 'error':
                             setTimeout(function() {
                                 $('#resultContainer').addClass('error').append(res.reason);
                                 submitButton.prop('disabled', false);
+                                loaderSVG.hide();
                             }, 1000);
                             break;
                         case 'progress':
@@ -225,6 +231,8 @@ $(document).ready(function() {
     }
 
     var submitButton = $('#submit-button');
+    var loaderSVG = $('.loader');
+    
     submitButton.click(function(e) {
         e.preventDefault();
         MyForm.submit();
