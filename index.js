@@ -230,9 +230,9 @@ $(document).ready(function() {
         $('#resultContainer').removeClass('error success progress').empty();
     }
 
-    var submitButton = $('#submit-button');
     var loaderSVG = $('.loader');
-    
+    var submitButton = $('#submit-button');
+
     submitButton.click(function(e) {
         e.preventDefault();
         MyForm.submit();
