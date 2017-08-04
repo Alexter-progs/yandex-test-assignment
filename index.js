@@ -12,7 +12,7 @@ $(document).ready(function() {
             });
 
         }
-        
+
         this.successCall = function() {
             return new Promise(function(resolve, reject) {
                 var response = JSON.stringify({
@@ -37,14 +37,15 @@ $(document).ready(function() {
 
     const ajaxMock = new AjaxMock();
 
+    // Form object
     MyForm = {
         formInputs: $('#main-form').find('div input'),
         getData: function() {
             var resObj = {};
 
-            this.formInputs.each(function(index, input) {
-                var inputName = $(input).prop('name');
-                var inputValue = $(input).prop('value');
+            this.formInputs.each(function() {
+                var inputName = $(this).prop('name');
+                var inputValue = $(this).prop('value');
 
                 resObj[inputName] = inputValue;
             });
@@ -52,11 +53,11 @@ $(document).ready(function() {
             return resObj;
         },
         setData: function(formData) {
-            this.formInputs.each(function(index, input) {
-                var inputName = $(input).prop('name');
+            this.formInputs.each(function() {
+                var inputName = $(this).prop('name');
                 var newValue = formData[inputName];
 
-                $(input).prop('value', newValue);
+                $(this).prop('value', newValue);
             });
         },
         validate: function() {
@@ -81,37 +82,15 @@ $(document).ready(function() {
             }
         },
         submit: function() {
-            if(this.validate().isValid) {
-                var actions = $('#actions').find('div input');
+            var validateInputs = this.validate();
+          
+            this.resetErrorClass();
 
-                var selectedAction = actions.filter(function(index, action) {
-                    return $(action).prop('checked');
-                })[0];
-
-                switch($(selectedAction).prop('value')) {
-                    case 'error': 
-                        ajaxMock.errorCall().then(function(res) {
-                            console.log(res);
-                        });
-
-                        break;
-                    case 'success':
-                        ajaxMock.successCall().then(function(res) {
-                            console.log(res);
-                        });
-
-                        break;
-                    case 'progress': 
-                        ajaxMock.progressCall().then(function(res) {
-                            console.log(res);
-                        });
-
-                        break;
-                    default: 
-                        throw Error('No action specified');
-                }
+            if(validateInputs.isValid) {
+                this.sendAjax();
             } else {
-
+                this.addErrorClass(validateInputs.errorFields);
+                
             }
         },
         validateFullName: function(fullName) {
@@ -119,6 +98,8 @@ $(document).ready(function() {
                 isValid: false,
                 errors: []
             }
+
+            fullName = fullName.trim();
 
             if(fullName.length < 1 || !fullName.split(' ').length === 3) {
                 res.isValid = false;
@@ -186,7 +167,49 @@ $(document).ready(function() {
                 .reduce(function(a, b){
                     return a + b;
                 }); 
-        }
+        },
+        sendAjax: function() {
+            var actions = $('#actions').find('div input');
+
+            var selectedAction = actions.filter(function() {
+                return $(this).prop('checked');
+            })[0];
+
+            switch($(selectedAction).prop('value')) {
+                case 'error': 
+                    ajaxMock.errorCall().then(function(res) {
+                        console.log(res);
+                    });
+
+                    break;
+                case 'success':
+                    ajaxMock.successCall().then(function(res) {
+                        console.log(res);
+                    });
+
+                    break;
+                case 'progress': 
+                    ajaxMock.progressCall().then(function(res) {
+                        console.log(res);
+                    });
+
+                    break;
+                default: 
+                    throw Error('No action specified');
+            }
+        },
+        addErrorClass: function(fields) {
+            var that = this;
+
+            fields.forEach(function(field) {
+                that.findInputByName(field).parent().addClass('has-danger');
+            });
+        },
+        resetErrorClass: function() {
+            this.formInputs.each(function(index, input) {
+                $(input).parent().removeClass('has-danger');
+            });
+        },
     };
 
     var submitButton = $('#submit-button');
