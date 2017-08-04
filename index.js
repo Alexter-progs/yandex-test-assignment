@@ -107,7 +107,7 @@ $(document).ready(function() {
             }
         },
         validateFullName: function() {
-            var fullNameInput = this.formInputs.each(function(index, input) {
+            var fullNameInput = this.formInputs.filter(function(index, input) {
                 return $(input).prop('name') === 'fio'
             });
 
@@ -122,12 +122,17 @@ $(document).ready(function() {
 
         },
         validateEmail: function() {
-            var emailInput = this.formInputs.each(function(index, input) {
+            var emailInput = this.formInputs.filter(function(index, input) {
                 return $(input).prop('name') === 'email'
             });
 
 
-        }
+        },
+        findInputByName: function() {
+            return this.formInputs.filter(function(index, input) {
+                return $(input).prop('name') === 'email'
+            });
+        } 
     };
 
     var submitButton = $('#submit-button');
