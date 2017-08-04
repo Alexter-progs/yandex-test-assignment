@@ -79,7 +79,6 @@ $(document).ready(function() {
             var phoneErrors = validatedPhoneNumber.errors;
             var fullNameErrors = validatedFullName.errors;
 
-
             return {
                 isValid: validatedEmail.isValid && validatedFullName.isValid && validatedPhoneNumber.isValid,
                 errorFields: errors.concat(emailErrors, phoneErrors, fullNameErrors)
@@ -91,8 +90,6 @@ $(document).ready(function() {
             
             resetErrorClass();
             resetResultContainer();
-
-
 
             if(validateInputs.isValid) {
                 submitButton.prop('disabled', true);
@@ -143,7 +140,7 @@ $(document).ready(function() {
 
         fullName = fullName.trim();
 
-        if(fullName.length < 1 || !fullName.split(' ').length === 3) {
+        if(fullName.split(' ').length !== 3) {
             res.isValid = false;
             res.errors.push('fio');
         } else {
