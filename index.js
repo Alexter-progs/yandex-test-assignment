@@ -88,23 +88,35 @@ $(document).ready(function() {
         },
         submit: function() {
             var validateInputs = this.validate();
-          
+            var that = this;
+            
             this.resetErrorClass();
             this.resetResultContainer();
 
-            if(true) {
+            if(validateInputs.isValid) {
+                submitButton.prop('disabled', true);
+
                 ajaxMock.call().then(function(res) {
                     res = JSON.parse(res);
-                    console.log(res)
+
                     switch (res.status) {
                         case 'success':
-                            $('#resultContainer').addClass('success').append('Success');
+                            setTimeout(function() {
+                                $('#resultContainer').addClass('success').append('Success');
+                                submitButton.prop('disabled', false);
+                            }, 1000);
                             break;
                         case 'error':
-                            $('#resultContainer').addClass('error').append('Error');
+                            setTimeout(function() {
+                                $('#resultContainer').addClass('error').append(res.reason);
+                                submitButton.prop('disabled', false);
+                            }, 1000);
                             break;
                         case 'progress':
                             $('#resultContainer').addClass('progress').append('Progress');
+                            setTimeout(function() {
+                                that.submit();
+                            }, res.timeout);
                             break;
                         default: 
                             throw Error('Not supported response status');
