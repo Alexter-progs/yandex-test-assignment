@@ -1,1 +1,1 @@
-#Test assignment for Yande Node.js school
+#Test assignment for Yandex Node.js school
